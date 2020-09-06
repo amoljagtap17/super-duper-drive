@@ -65,4 +65,15 @@ public class File {
     public void setFileData(byte[] fileData) {
         this.fileData = fileData;
     }
+
+    @Override
+    public String toString() {
+        return "File{" +
+                "fileId=" + fileId +
+                ", fileName='" + fileName + '\'' +
+                ", contentType='" + contentType + '\'' +
+                ", fileSize='" + fileSize + '\'' +
+                ", userId=" + userId +
+                '}';
+    }
 }
