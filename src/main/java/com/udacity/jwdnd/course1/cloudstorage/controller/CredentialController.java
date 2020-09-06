@@ -22,7 +22,6 @@ public class CredentialController {
 
         User user = (User) authentication.getDetails();
         credentialForm.setUserId(user.getUserId());
-        credentialForm.setUserName(user.getUsername());
 
         credentialService.insertUpdateCredential(credentialForm);
 
