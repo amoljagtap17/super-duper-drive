@@ -15,9 +15,9 @@ public class NoteService {
         this.noteMapper = noteMapper;
     }
 
-    public NoteForm getNoteById(Integer noteId) {
+    /*public NoteForm getNoteById(Integer noteId) {
         return noteMapper.getNoteById(noteId);
-    }
+    }*/
 
     public List<NoteForm> getNotesByUserId(Integer userId) {
         return noteMapper.getNotesByUserId(userId);

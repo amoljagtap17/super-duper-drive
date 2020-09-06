@@ -19,7 +19,7 @@ public class NoteController {
     }
 
     @PostMapping()
-    public String insertUpdateNote(@ModelAttribute("noteForm") NoteForm noteForm, Model model, Authentication authentication) {
+    public String insertUpdateNote(@ModelAttribute("noteForm") NoteForm noteForm, Authentication authentication) {
 
         User user = (User) authentication.getDetails();
         noteForm.setUserId(user.getUserId());
