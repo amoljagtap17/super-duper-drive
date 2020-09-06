@@ -5,6 +5,7 @@ import com.udacity.jwdnd.course1.cloudstorage.model.File;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
+import java.util.List;
 
 @Service
 public class FileService {
@@ -19,5 +20,9 @@ public class FileService {
 
     public int uploadFile(File file) throws IOException {
         return fileMapper.insertFile(file);
+    }
+
+    public List<File> getFiles() {
+        return fileMapper.getAllFiles();
     }
 }
