@@ -19,12 +19,12 @@ public class NoteController {
     }
 
     @PostMapping()
-    public String addNote(@ModelAttribute("noteForm") NoteForm noteForm, Model model, Authentication authentication) {
+    public String insertUpdateNote(@ModelAttribute("noteForm") NoteForm noteForm, Model model, Authentication authentication) {
 
         User user = (User) authentication.getDetails();
         noteForm.setUserId(user.getUserId());
 
-        noteService.insertNote(noteForm);
+        noteService.insertUpdateNote(noteForm);
 
         return "redirect:/home";
     }

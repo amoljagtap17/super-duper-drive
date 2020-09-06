@@ -23,12 +23,12 @@ public class NoteService {
         return noteMapper.getNotesByUserId(userId);
     }
 
-    public int insertNote(NoteForm noteForm) {
-        return noteMapper.insertNote(noteForm);
-    }
-
-    public int updateNote(NoteForm noteForm) {
-        return noteMapper.updateNote(noteForm);
+    public int insertUpdateNote(NoteForm noteForm) {
+        if (noteForm.getNoteId() != null) {
+            return noteMapper.updateNote(noteForm);
+        } else {
+            return noteMapper.insertNote(noteForm);
+        }
     }
 
     public int deleteNoteById(Integer noteId) {
