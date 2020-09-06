@@ -86,7 +86,11 @@
                                     <tr th:each="note : ${notes}" th:unless="${notes.isEmpty()}">
                                         <td>
                                             <button type="button" class="btn btn-success">Edit</button>
-                                            <a class="btn btn-danger">Delete</a>
+                                            <a
+                                                class="btn btn-danger"
+                                                th:href="@{/note/delete(noteId=${note.noteId})}"
+                                                onclick="if (!(confirm('Are you sure you want to delete this note?'))) return false"
+                                            >Delete</a>
                                         </td>
                                         <th scope="row" th:text="${note.noteTitle}">Example Note Title</th>
                                         <td th:text="${note.noteDescription}">Example Note Description </td>
