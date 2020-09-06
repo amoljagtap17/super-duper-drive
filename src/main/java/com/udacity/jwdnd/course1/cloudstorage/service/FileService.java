@@ -22,7 +22,15 @@ public class FileService {
         return fileMapper.insertFile(file);
     }
 
-    public List<File> getFiles() {
+    public File getFileById(Integer fileId) {
+        return fileMapper.getFileById(fileId);
+    }
+
+    public List<File> getAllFiles() {
         return fileMapper.getAllFiles();
+    }
+
+    public void deleteFileById(Integer fileId) {
+        fileMapper.deleteFileById(fileId);
     }
 }
