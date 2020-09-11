@@ -19,21 +19,33 @@ public class NoteController {
     }
 
     @PostMapping()
-    public String insertUpdateNote(@ModelAttribute("noteForm") NoteForm noteForm, Authentication authentication) {
+    public String insertUpdateNote(@ModelAttribute("noteForm") NoteForm noteForm, Model model, Authentication authentication) {
 
         User user = (User) authentication.getDetails();
         noteForm.setUserId(user.getUserId());
 
-        noteService.insertUpdateNote(noteForm);
+        try {
+            noteService.insertUpdateNote(noteForm);
 
-        return "redirect:/home";
+            model.addAttribute("success", true);
+        } catch (Exception ex) {
+            model.addAttribute("success", false);
+        }
+
+        return "result";
     }
 
     @GetMapping("/delete")
-    public String deleteNote(@RequestParam("noteId") Integer noteId) {
+    public String deleteNote(@RequestParam("noteId") Integer noteId, Model model) {
 
-        noteService.deleteNoteById(noteId);
+        try {
+            noteService.deleteNoteById(noteId);
 
-        return "redirect:/home";
+            model.addAttribute("success", true);
+        } catch (Exception ex) {
+            model.addAttribute("error", true);
+        }
+
+        return "result";
     }
 }

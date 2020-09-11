@@ -26,8 +26,6 @@ public class CredentialController {
     @PostMapping()
     public String insertUpdateCredential(@ModelAttribute("credentialForm") CredentialForm credentialForm, Authentication authentication) {
 
-        System.out.println("credentialForm1 : " + credentialForm.toString());
-
         SecureRandom random = new SecureRandom();
         byte[] key = new byte[16];
         random.nextBytes(key);
@@ -39,8 +37,6 @@ public class CredentialController {
         credentialForm.setUserId(user.getUserId());
         credentialForm.setKey(encodedKey);
         credentialForm.setPassword(encryptedPassword);
-
-        System.out.println("credentialForm2 : " + credentialForm.toString());
 
         credentialService.insertUpdateCredential(credentialForm);
 
