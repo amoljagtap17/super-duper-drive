@@ -10,6 +10,7 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -29,7 +30,7 @@ public class FileController {
     }
 
     @PostMapping("/upload")
-    public String handleFileUpload(@RequestParam("fileUpload") MultipartFile fileUpload, Authentication authentication) throws IOException {
+    public String handleFileUpload(@RequestParam("fileUpload") MultipartFile fileUpload, Model model, Authentication authentication) throws IOException {
 
         User user = userService.getUser(authentication.getName());
         File fileToUpload = new File(
@@ -41,17 +42,29 @@ public class FileController {
                 fileUpload.getBytes()
         );
 
-        fileService.uploadFile(fileToUpload);
+        try {
+            fileService.uploadFile(fileToUpload);
 
-        return "redirect:/home";
+            model.addAttribute("success", true);
+        } catch (Exception ex) {
+            model.addAttribute("success", false);
+        }
+
+        return "result";
     }
 
     @GetMapping("/delete")
-    public String deleteFile(@RequestParam("fileId") Integer fileId) {
+    public String deleteFile(@RequestParam("fileId") Integer fileId, Model model) {
 
-        fileService.deleteFileById(fileId);
+        try {
+            fileService.deleteFileById(fileId);
 
-        return "redirect:/home";
+            model.addAttribute("success", true);
+        } catch (Exception ex) {
+            model.addAttribute("success", false);
+        }
+
+        return "result";
     }
 
     /*@GetMapping(value = "/download", produces = MediaType.APPLICATION_OCTET_STREAM_VALUE)
@@ -68,8 +81,6 @@ public class FileController {
     public ResponseEntity<byte[]> download(@RequestParam("fileId") Integer fileId) {
 
         File file = fileService.getFileById(fileId);
-
-        System.out.println("File: " + file.toString());
 
         byte[] output = file.getFileData();
 

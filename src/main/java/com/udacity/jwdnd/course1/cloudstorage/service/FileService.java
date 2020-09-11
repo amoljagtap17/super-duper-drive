@@ -26,8 +26,8 @@ public class FileService {
         return fileMapper.getFileById(fileId);
     }
 
-    public List<File> getAllFiles() {
-        return fileMapper.getAllFiles();
+    public List<File> getAllFiles(Integer userId) {
+        return fileMapper.getAllFiles(userId);
     }
 
     public void deleteFileById(Integer fileId) {

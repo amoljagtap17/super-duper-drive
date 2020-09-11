@@ -6,6 +6,7 @@ import com.udacity.jwdnd.course1.cloudstorage.service.CredentialService;
 import com.udacity.jwdnd.course1.cloudstorage.service.EncryptionService;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import java.security.SecureRandom;
@@ -24,7 +25,7 @@ public class CredentialController {
     }
 
     @PostMapping()
-    public String insertUpdateCredential(@ModelAttribute("credentialForm") CredentialForm credentialForm, Authentication authentication) {
+    public String insertUpdateCredential(@ModelAttribute("credentialForm") CredentialForm credentialForm, Model model, Authentication authentication) {
 
         SecureRandom random = new SecureRandom();
         byte[] key = new byte[16];
@@ -38,16 +39,28 @@ public class CredentialController {
         credentialForm.setKey(encodedKey);
         credentialForm.setPassword(encryptedPassword);
 
-        credentialService.insertUpdateCredential(credentialForm);
+        try {
+            credentialService.insertUpdateCredential(credentialForm);
 
-        return "redirect:/home";
+            model.addAttribute("success", true);
+        } catch (Exception ex) {
+            model.addAttribute("success", false);
+        }
+
+        return "result";
     }
 
     @GetMapping("/delete")
-    public String deleteCredential(@RequestParam("credentialId")Integer credentialId) {
+    public String deleteCredential(@RequestParam("credentialId") Integer credentialId, Model model) {
 
-        credentialService.deleteCredentialById(credentialId);
+        try {
+            credentialService.deleteCredentialById(credentialId);
 
-        return "redirect:/home";
+            model.addAttribute("success", true);
+        } catch (Exception ex) {
+            model.addAttribute("success", false);
+        }
+
+        return "result";
     }
 }

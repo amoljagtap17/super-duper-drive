@@ -43,7 +43,7 @@ public class NoteController {
 
             model.addAttribute("success", true);
         } catch (Exception ex) {
-            model.addAttribute("error", true);
+            model.addAttribute("success", false);
         }
 
         return "result";
