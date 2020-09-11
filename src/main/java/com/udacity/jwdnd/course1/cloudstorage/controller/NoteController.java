@@ -21,16 +21,26 @@ public class NoteController {
     @PostMapping()
     public String insertUpdateNote(@ModelAttribute("noteForm") NoteForm noteForm, Model model, Authentication authentication) {
 
+        String errorMsg = null;
+        boolean success = false;
+
         User user = (User) authentication.getDetails();
         noteForm.setUserId(user.getUserId());
 
         try {
-            noteService.insertUpdateNote(noteForm);
+            int recordsUpdated = noteService.insertUpdateNote(noteForm);
 
-            model.addAttribute("success", true);
+            if (recordsUpdated == 0) {
+                errorMsg = "No notes were inserted/ updated. Please try again.";
+            } else {
+                success = true;
+            }
         } catch (Exception ex) {
-            model.addAttribute("success", false);
+            errorMsg = "There was an error inserting/ updating the note. Please try again.";
         }
+
+        model.addAttribute("success", success);
+        model.addAttribute("errorMsg", errorMsg);
 
         return "result";
     }
@@ -38,13 +48,23 @@ public class NoteController {
     @GetMapping("/delete")
     public String deleteNote(@RequestParam("noteId") Integer noteId, Model model) {
 
-        try {
-            noteService.deleteNoteById(noteId);
+        String errorMsg = null;
+        boolean success = false;
 
-            model.addAttribute("success", true);
+        try {
+            int recordsDeleted = noteService.deleteNoteById(noteId);
+
+            if (recordsDeleted == 0) {
+                errorMsg = "No notes were deleted. Please try again.";
+            } else {
+                success = true;
+            }
         } catch (Exception ex) {
-            model.addAttribute("success", false);
+            errorMsg = "There was an error deleting the note. Please try again.";
         }
+
+        model.addAttribute("success", success);
+        model.addAttribute("errorMsg", errorMsg);
 
         return "result";
     }
