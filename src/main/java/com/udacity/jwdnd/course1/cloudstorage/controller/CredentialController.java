@@ -27,6 +27,9 @@ public class CredentialController {
     @PostMapping()
     public String insertUpdateCredential(@ModelAttribute("credentialForm") CredentialForm credentialForm, Model model, Authentication authentication) {
 
+        String errorMsg = null;
+        boolean success = false;
+
         SecureRandom random = new SecureRandom();
         byte[] key = new byte[16];
         random.nextBytes(key);
@@ -40,12 +43,19 @@ public class CredentialController {
         credentialForm.setPassword(encryptedPassword);
 
         try {
-            credentialService.insertUpdateCredential(credentialForm);
+            int recordsUpdated = credentialService.insertUpdateCredential(credentialForm);
 
-            model.addAttribute("success", true);
+            if (recordsUpdated == 0) {
+                errorMsg = "No credentials were inserted/ updated. Please try again.";
+            } else {
+                success = true;
+            }
         } catch (Exception ex) {
-            model.addAttribute("success", false);
+            errorMsg = "There was an error inserting/ updating the credential. Please try again.";
         }
+
+        model.addAttribute("success", success);
+        model.addAttribute("errorMsg", errorMsg);
 
         return "result";
     }
@@ -53,13 +63,23 @@ public class CredentialController {
     @GetMapping("/delete")
     public String deleteCredential(@RequestParam("credentialId") Integer credentialId, Model model) {
 
-        try {
-            credentialService.deleteCredentialById(credentialId);
+        String errorMsg = null;
+        boolean success = false;
 
-            model.addAttribute("success", true);
+        try {
+            int recordsDeleted = credentialService.deleteCredentialById(credentialId);
+
+            if (recordsDeleted == 0) {
+                errorMsg = "No credentials were deleted. Please try again.";
+            } else {
+                success = true;
+            }
         } catch (Exception ex) {
-            model.addAttribute("success", false);
+            errorMsg = "There was an error deleting the credential. Please try again.";
         }
+
+        model.addAttribute("success", success);
+        model.addAttribute("errorMsg", errorMsg);
 
         return "result";
     }
