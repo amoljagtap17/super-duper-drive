@@ -30,7 +30,7 @@ public class FileService {
         return fileMapper.getAllFiles(userId);
     }
 
-    public void deleteFileById(Integer fileId) {
-        fileMapper.deleteFileById(fileId);
+    public int deleteFileById(Integer fileId) {
+        return fileMapper.deleteFileById(fileId);
     }
 }

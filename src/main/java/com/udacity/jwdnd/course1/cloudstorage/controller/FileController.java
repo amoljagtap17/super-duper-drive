@@ -32,6 +32,8 @@ public class FileController {
     @PostMapping("/upload")
     public String handleFileUpload(@RequestParam("fileUpload") MultipartFile fileUpload, Model model, Authentication authentication) throws IOException {
 
+        String errorMsg = null;
+
         User user = userService.getUser(authentication.getName());
         File fileToUpload = new File(
                 null,
@@ -48,7 +50,11 @@ public class FileController {
             model.addAttribute("success", true);
         } catch (Exception ex) {
             model.addAttribute("success", false);
+
+            errorMsg = "There was an error uploading the file. Please try again.";
         }
+
+        model.addAttribute("errorMsg", errorMsg);
 
         return "result";
     }
@@ -56,13 +62,23 @@ public class FileController {
     @GetMapping("/delete")
     public String deleteFile(@RequestParam("fileId") Integer fileId, Model model) {
 
-        try {
-            fileService.deleteFileById(fileId);
+        String errorMsg = null;
 
-            model.addAttribute("success", true);
+        try {
+            int filesDeleted = fileService.deleteFileById(fileId);
+
+            if (filesDeleted == 0) {
+                errorMsg = "No file was deleted. Please try again.";
+            } else {
+                model.addAttribute("success", true);
+            }
         } catch (Exception ex) {
             model.addAttribute("success", false);
+
+            errorMsg = "There was an error deleting the file. Please try again.";
         }
+
+        model.addAttribute("errorMsg", errorMsg);
 
         return "result";
     }

@@ -19,5 +19,5 @@ public interface FileMapper {
     int insertFile(File file);
 
     @Delete("DELETE FROM FILES WHERE fileId = #{fileId}")
-    void deleteFileById(Integer fileId);
+    int deleteFileById(Integer fileId);
 }
