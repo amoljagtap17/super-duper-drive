@@ -58,6 +58,9 @@ class CloudStorageApplicationTests {
 		String title = "title";
 		String description = "some description";
 
+		String updatedTitle = "title updated";
+		String updatedDescription = "some description updated";
+
 		driver.get(baseURL + "/signup");
 
 		SignupPage signupPage = new SignupPage(driver);
@@ -73,17 +76,17 @@ class CloudStorageApplicationTests {
 		Thread.sleep(500);
 		notesPage.clickNavNotesTab();
 
+		// ADD NEW NOTE TESTS
 		Thread.sleep(500);
 		notesPage.clickAddNewNoteButton();
 
 		Thread.sleep(500);
-		notesPage.addNewNote(title, description);
+		notesPage.addEditNote(title, description);
 
 		Thread.sleep(500);
+		driver.findElement(By.xpath("/html/body/div/div/span/a")).click();
 
-		WebElement continueLink = driver.findElement(By.xpath("/html/body/div/div/span/a"));
-		continueLink.click();
-
+		// CONFIRM NEW NOTE ADDED
 		Thread.sleep(500);
 		notesPage.clickNavNotesTab();
 
@@ -92,6 +95,37 @@ class CloudStorageApplicationTests {
 
 		assertEquals(title, addedNote.getNoteTitle());
 		assertEquals(description, addedNote.getNoteDescription());
+
+		// EDIT NOTE TESTS
+		notesPage.clickEditNoteButton();
+
+		Thread.sleep(500);
+		notesPage.addEditNote(updatedTitle, updatedDescription);
+
+		Thread.sleep(500);
+		driver.findElement(By.xpath("/html/body/div/div/span/a")).click();
+
+		// CONFIRM NOTE EDITED
+		Thread.sleep(500);
+		notesPage.clickNavNotesTab();
+
+		Thread.sleep(500);
+		NoteForm updatedNote = notesPage.getFirstNote();
+
+		assertEquals(updatedTitle, updatedNote.getNoteTitle());
+		assertEquals(updatedDescription, updatedNote.getNoteDescription());
+
+		// DELETE NOTE TESTS
+		notesPage.clickDeleteNoteButton();
+		driver.switchTo().alert().accept();
+
+		Thread.sleep(1000);
+		driver.findElement(By.xpath("/html/body/div/div/span/a")).click();
+
+		Thread.sleep(500);
+		notesPage.clickNavNotesTab();
+
+		assertEquals("", driver.findElement(By.xpath("//*[@id=\"userTable\"]/tbody")).getText());
 	}
 
 }

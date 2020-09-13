@@ -29,13 +29,23 @@ public class NotesPage {
     @FindBy(className = "noteDescriptionText")
     private WebElement firstNoteDescriptionText;
 
+    @FindBy(xpath = "//*[@id=\"userTable\"]/tbody/tr/td[1]/button")
+    private WebElement editNoteButton;
+
+    @FindBy(xpath = "//*[@id=\"userTable\"]/tbody/tr/td[1]/a")
+    private WebElement deleteNoteButton;
+
     public NotesPage(WebDriver driver) {
         PageFactory.initElements(driver, this);
     }
 
-    public void addNewNote(String title, String description) {
+    public void addEditNote(String title, String description) {
+        this.noteTitleField.clear();
         this.noteTitleField.sendKeys(title);
+
+        this.noteDescriptionField.clear();
         this.noteDescriptionField.sendKeys(description);
+
         this.saveChangesButton.click();
     }
 
@@ -45,6 +55,14 @@ public class NotesPage {
 
     public void clickAddNewNoteButton() {
         this.addNewNoteButton.click();
+    }
+
+    public void clickEditNoteButton() {
+        this.editNoteButton.click();
+    }
+
+    public void clickDeleteNoteButton() {
+        this.deleteNoteButton.click();
     }
 
     public NoteForm getFirstNote() {
@@ -57,4 +75,5 @@ public class NotesPage {
 
         return noteForm;
     }
+
 }
