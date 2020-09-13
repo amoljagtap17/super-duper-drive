@@ -96,8 +96,8 @@
                                                 onclick="if (!(confirm('Are you sure you want to delete this note?'))) return false"
                                             >Delete</a>
                                         </td>
-                                        <th scope="row" th:text="${note.noteTitle}">Example Note Title</th>
-                                        <td th:text="${note.noteDescription}">Example Note Description </td>
+                                        <th class="noteTitleText" scope="row" th:text="${note.noteTitle}">Example Note Title</th>
+                                        <td class="noteDescriptionText" th:text="${note.noteDescription}">Example Note Description </td>
                                     </tr>
                                 </tbody>
                             </table>
