@@ -1,5 +1,6 @@
 package com.udacity.jwdnd.course1.cloudstorage;
 
+import com.udacity.jwdnd.course1.cloudstorage.model.CredentialForm;
 import com.udacity.jwdnd.course1.cloudstorage.model.NoteForm;
 import io.github.bonigarcia.wdm.WebDriverManager;
 import org.junit.jupiter.api.*;
@@ -124,6 +125,91 @@ class CloudStorageApplicationTests {
 
 		Thread.sleep(500);
 		notesPage.clickNavNotesTab();
+
+		assertEquals("", driver.findElement(By.xpath("//*[@id=\"userTable\"]/tbody")).getText());
+	}
+
+	@Test
+	public void testUserSignupLoginAndCredentialFunctionality() throws InterruptedException {
+
+		String username = "pzastoup";
+		String password = "whatabadpassword";
+
+		String url = "http://localhost";
+		String userName = "testuser";
+		String passcode = "password";
+
+		String updatedUrl = "http://localhost:8080";
+		String updatedUserName = "testuser1";
+		String updatedPasscode = "password123";
+
+		driver.get(baseURL + "/signup");
+
+		SignupPage signupPage = new SignupPage(driver);
+		signupPage.signup("Peter", "Zastoupil", username, password);
+
+		driver.get(baseURL + "/login");
+
+		LoginPage loginPage = new LoginPage(driver);
+		loginPage.login(username, password);
+
+		CredentialsPage credentialsPage = new CredentialsPage(driver);
+
+		Thread.sleep(500);
+		credentialsPage.clickNavCredentialsTab();
+
+		// ADD NEW CREDENTIAL TESTS
+		Thread.sleep(500);
+		credentialsPage.clickAddNewCredentialButton();
+
+		Thread.sleep(500);
+		credentialsPage.addEditCredential(url, userName, passcode);
+
+		Thread.sleep(500);
+		driver.findElement(By.xpath("/html/body/div/div/span/a")).click();
+
+		// CONFIRM NEW CREDENTIAL ADDED
+		Thread.sleep(500);
+		credentialsPage.clickNavCredentialsTab();
+
+		Thread.sleep(500);
+		CredentialForm addedCredential = credentialsPage.getFirstCredential();
+
+		System.out.println("addedCredential : " + addedCredential.toString());
+
+		assertEquals(url, addedCredential.getUrl());
+		assertEquals(userName, addedCredential.getUserName());
+		// assertEquals(passcode, addedCredential.getPassword());
+
+		// EDIT CREDENTIAL TESTS
+		credentialsPage.clickEditCredentialButton();
+
+		Thread.sleep(500);
+		credentialsPage.addEditCredential(updatedUrl, updatedUserName, updatedPasscode);
+
+		Thread.sleep(500);
+		driver.findElement(By.xpath("/html/body/div/div/span/a")).click();
+
+		// CONFIRM CREDENTIAL EDITED
+		Thread.sleep(500);
+		credentialsPage.clickNavCredentialsTab();
+
+		Thread.sleep(500);
+		CredentialForm updatedCredential = credentialsPage.getFirstCredential();
+
+		assertEquals(updatedUrl, updatedCredential.getUrl());
+		assertEquals(updatedUserName, updatedCredential.getUserName());
+		// assertEquals(updatedPasscode, updatedCredential.getPassword());
+
+		// DELETE CREDENTIAL TESTS
+		credentialsPage.clickDeleteCredentialButton();
+		driver.switchTo().alert().accept();
+
+		Thread.sleep(1000);
+		driver.findElement(By.xpath("/html/body/div/div/span/a")).click();
+
+		Thread.sleep(500);
+		credentialsPage.clickNavCredentialsTab();
 
 		assertEquals("", driver.findElement(By.xpath("//*[@id=\"userTable\"]/tbody")).getText());
 	}

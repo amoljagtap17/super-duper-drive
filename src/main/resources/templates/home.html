@@ -163,9 +163,9 @@
                                             onclick="if (!(confirm('Are you sure you want to delete this credential?'))) return false"
                                         >Delete</a>
                                     </td>
-                                    <th scope="row" th:text="${credential.url}">Example Credential URL</th>
-                                    <td th:text="${credential.userName}">Example Credential Username</td>
-                                    <td th:text="${credential.password}">Example Credential Password</td>
+                                    <th class="credentialUrlText" scope="row" th:text="${credential.url}">Example Credential URL</th>
+                                    <td class="credentialUsernameText" th:text="${credential.userName}">Example Credential Username</td>
+                                    <td class="credentialPasswordText" th:text="${credential.password}">Example Credential Password</td>
                                 </tr>
                                 </tbody>
                             </table>
