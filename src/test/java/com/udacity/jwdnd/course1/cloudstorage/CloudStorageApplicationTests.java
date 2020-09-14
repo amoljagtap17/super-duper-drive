@@ -13,6 +13,7 @@ import org.springframework.boot.web.server.LocalServerPort;
 import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
+@TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 class CloudStorageApplicationTests {
 
 	@LocalServerPort
@@ -21,6 +22,12 @@ class CloudStorageApplicationTests {
 	private WebDriver driver;
 
 	public String baseURL;
+
+	private final String username = "pzastoup";
+	private final String password = "whatabadpassword";
+
+	private HomePage homePage;
+	private NotesPage notesPage;
 
 	@BeforeAll
 	static void beforeAll() {
@@ -31,6 +38,9 @@ class CloudStorageApplicationTests {
 	public void beforeEach() {
 		this.driver = new ChromeDriver();
 		this.baseURL = "http://localhost:" + port;
+
+		homePage = new HomePage(this.driver);
+		notesPage = new NotesPage(this.driver);
 	}
 
 	@AfterEach
@@ -41,35 +51,57 @@ class CloudStorageApplicationTests {
 		this.driver = null;
 	}
 
-	/*@Test
-	public void getLoginPage() {
-		driver.get("http://localhost:" + this.port + "/login");
-		Assertions.assertEquals("Login", driver.getTitle());
-	}*/
-
-	@Test
-	public void testUserSignupLoginAndNoteFunctionality() throws InterruptedException {
-
-		String username = "pzastoup";
-		String password = "whatabadpassword";
-
-		String title = "title";
-		String description = "some description";
-
-		String updatedTitle = "title updated";
-		String updatedDescription = "some description updated";
-
-		driver.get(baseURL + "/signup");
-
-		SignupPage signupPage = new SignupPage(driver);
-		signupPage.signup("Peter", "Zastoupil", username, password);
-
+	private void doLogin() {
 		driver.get(baseURL + "/login");
 
 		LoginPage loginPage = new LoginPage(driver);
 		loginPage.login(username, password);
+	}
 
-		NotesPage notesPage = new NotesPage(driver);
+	private void doLogout() {
+		homePage.logout();
+	}
+
+	private void doSignUp() {
+		driver.get(baseURL + "/signup");
+
+		SignupPage signupPage = new SignupPage(driver);
+		signupPage.signup("Peter", "Zastoupil", username, password);
+	}
+
+	@Test
+	@Order(1)
+	public void testHomePageNotAccessible() {
+		driver.get(baseURL + "/home");
+
+		assertFalse(driver.getTitle() == "Home");
+	}
+
+	@Test
+	@Order(2)
+	public void testHomePageAccessible() {
+
+		doSignUp();
+
+		doLogin();
+
+		System.out.println("title" + driver.getTitle());
+
+		assertEquals("Home", driver.getTitle());
+
+		doLogout();
+
+		assertFalse(driver.getTitle() == "Home");
+	}
+
+	@Test
+	@Order(3)
+	public void testCreateAndVerifyNote() throws InterruptedException {
+
+		String title = "title";
+		String description = "some description";
+
+		doLogin();
 
 		Thread.sleep(500);
 		notesPage.clickNavNotesTab();
@@ -94,7 +126,22 @@ class CloudStorageApplicationTests {
 		assertEquals(title, addedNote.getNoteTitle());
 		assertEquals(description, addedNote.getNoteDescription());
 
+	}
+
+	@Test
+	@Order(4)
+	public void testEditAndVerifyNote() throws InterruptedException {
+
+		String updatedTitle = "title updated";
+		String updatedDescription = "some description updated";
+
+		doLogin();
+
+		Thread.sleep(500);
+		notesPage.clickNavNotesTab();
+
 		// EDIT NOTE TESTS
+		Thread.sleep(500);
 		notesPage.clickEditNoteButton();
 
 		Thread.sleep(500);
@@ -113,7 +160,19 @@ class CloudStorageApplicationTests {
 		assertEquals(updatedTitle, updatedNote.getNoteTitle());
 		assertEquals(updatedDescription, updatedNote.getNoteDescription());
 
+	}
+
+	@Test
+	@Order(5)
+	public void testDeleteAndVerifyNote() throws InterruptedException {
+
+		doLogin();
+
+		Thread.sleep(500);
+		notesPage.clickNavNotesTab();
+
 		// DELETE NOTE TESTS
+		Thread.sleep(500);
 		notesPage.clickDeleteNoteButton();
 		driver.switchTo().alert().accept();
 
@@ -126,11 +185,9 @@ class CloudStorageApplicationTests {
 		assertEquals("", driver.findElement(By.xpath("//*[@id=\"userTable\"]/tbody")).getText());
 	}
 
-	@Test
+	/*@Test
+	@Order(3)
 	public void testUserSignupLoginAndCredentialFunctionality() throws InterruptedException {
-
-		String username = "pzastoup";
-		String password = "whatabadpassword";
 
 		String url = "http://localhost";
 		String userName = "testuser";
@@ -140,15 +197,7 @@ class CloudStorageApplicationTests {
 		String updatedUserName = "testuser1";
 		String updatedPasscode = "password123";
 
-		driver.get(baseURL + "/signup");
-
-		SignupPage signupPage = new SignupPage(driver);
-		signupPage.signup("Peter", "Zastoupil", username, password);
-
-		driver.get(baseURL + "/login");
-
-		LoginPage loginPage = new LoginPage(driver);
-		loginPage.login(username, password);
+		doLogin();
 
 		CredentialsPage credentialsPage = new CredentialsPage(driver);
 
@@ -207,6 +256,6 @@ class CloudStorageApplicationTests {
 		credentialsPage.clickNavCredentialsTab();
 
 		assertEquals("", driver.findElement(By.xpath("//*[@id=\"userTable\"]/tbody")).getText());
-	}
+	}*/
 
 }
