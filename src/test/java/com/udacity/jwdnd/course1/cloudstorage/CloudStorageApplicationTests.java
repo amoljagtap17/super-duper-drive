@@ -28,6 +28,7 @@ class CloudStorageApplicationTests {
 
 	private HomePage homePage;
 	private NotesPage notesPage;
+	private CredentialsPage credentialsPage;
 
 	@BeforeAll
 	static void beforeAll() {
@@ -41,6 +42,7 @@ class CloudStorageApplicationTests {
 
 		homePage = new HomePage(this.driver);
 		notesPage = new NotesPage(this.driver);
+		credentialsPage = new CredentialsPage(this.driver);
 	}
 
 	@AfterEach
@@ -185,77 +187,97 @@ class CloudStorageApplicationTests {
 		assertEquals("", driver.findElement(By.xpath("//*[@id=\"userTable\"]/tbody")).getText());
 	}
 
-	/*@Test
-	@Order(3)
-	public void testUserSignupLoginAndCredentialFunctionality() throws InterruptedException {
+    @Test
+    @Order(6)
+    public void testCreateAndVerifyCredential() throws InterruptedException {
 
-		String url = "http://localhost";
-		String userName = "testuser";
-		String passcode = "password";
+        String url = "http://localhost";
+        String userName = "testuser";
+        String passcode = "password";
 
-		String updatedUrl = "http://localhost:8080";
-		String updatedUserName = "testuser1";
-		String updatedPasscode = "password123";
+        doLogin();
 
-		doLogin();
+        Thread.sleep(500);
+        credentialsPage.clickNavCredentialsTab();
 
-		CredentialsPage credentialsPage = new CredentialsPage(driver);
+        // ADD NEW CREDENTIAL TESTS
+        Thread.sleep(500);
+        credentialsPage.clickAddNewCredentialButton();
 
-		Thread.sleep(500);
-		credentialsPage.clickNavCredentialsTab();
+        Thread.sleep(500);
+        credentialsPage.addEditCredential(url, userName, passcode);
 
-		// ADD NEW CREDENTIAL TESTS
-		Thread.sleep(500);
-		credentialsPage.clickAddNewCredentialButton();
+        Thread.sleep(500);
+        driver.findElement(By.xpath("/html/body/div/div/span/a")).click();
 
-		Thread.sleep(500);
-		credentialsPage.addEditCredential(url, userName, passcode);
+        // CONFIRM NEW CREDENTIAL ADDED
+        Thread.sleep(500);
+        credentialsPage.clickNavCredentialsTab();
 
-		Thread.sleep(500);
-		driver.findElement(By.xpath("/html/body/div/div/span/a")).click();
+        Thread.sleep(500);
+        CredentialForm addedCredential = credentialsPage.getFirstCredential();
 
-		// CONFIRM NEW CREDENTIAL ADDED
-		Thread.sleep(500);
-		credentialsPage.clickNavCredentialsTab();
+        assertEquals(url, addedCredential.getUrl());
+        assertEquals(userName, addedCredential.getUserName());
 
-		Thread.sleep(500);
-		CredentialForm addedCredential = credentialsPage.getFirstCredential();
+    }
 
-		System.out.println("addedCredential : " + addedCredential.toString());
+    @Test
+    @Order(7)
+    public void testEditAndVerifyCredential() throws InterruptedException {
 
-		assertEquals(url, addedCredential.getUrl());
-		assertEquals(userName, addedCredential.getUserName());
+        String updatedUrl = "http://localhost:8080";
+        String updatedUserName = "testuser1";
+        String updatedPasscode = "password123";
 
-		// EDIT CREDENTIAL TESTS
-		credentialsPage.clickEditCredentialButton();
+        doLogin();
 
-		Thread.sleep(500);
-		credentialsPage.addEditCredential(updatedUrl, updatedUserName, updatedPasscode);
+        Thread.sleep(500);
+        credentialsPage.clickNavCredentialsTab();
 
-		Thread.sleep(500);
-		driver.findElement(By.xpath("/html/body/div/div/span/a")).click();
+        // EDIT CREDENTIAL TESTS
+        Thread.sleep(500);
+        credentialsPage.clickEditCredentialButton();
 
-		// CONFIRM CREDENTIAL EDITED
-		Thread.sleep(500);
-		credentialsPage.clickNavCredentialsTab();
+        Thread.sleep(500);
+        credentialsPage.addEditCredential(updatedUrl, updatedUserName, updatedPasscode);
 
-		Thread.sleep(500);
-		CredentialForm updatedCredential = credentialsPage.getFirstCredential();
+        Thread.sleep(500);
+        driver.findElement(By.xpath("/html/body/div/div/span/a")).click();
 
-		assertEquals(updatedUrl, updatedCredential.getUrl());
-		assertEquals(updatedUserName, updatedCredential.getUserName());
+        // CONFIRM CREDENTIAL EDITED
+        Thread.sleep(500);
+        credentialsPage.clickNavCredentialsTab();
 
-		// DELETE CREDENTIAL TESTS
-		credentialsPage.clickDeleteCredentialButton();
-		driver.switchTo().alert().accept();
+        Thread.sleep(500);
+        CredentialForm updatedCredential = credentialsPage.getFirstCredential();
 
-		Thread.sleep(1000);
-		driver.findElement(By.xpath("/html/body/div/div/span/a")).click();
+        assertEquals(updatedUrl, updatedCredential.getUrl());
+        assertEquals(updatedUserName, updatedCredential.getUserName());
 
-		Thread.sleep(500);
-		credentialsPage.clickNavCredentialsTab();
+    }
 
-		assertEquals("", driver.findElement(By.xpath("//*[@id=\"userTable\"]/tbody")).getText());
-	}*/
+    @Test
+    @Order(8)
+    public void testDeleteAndVerifyCredential() throws InterruptedException {
+
+        doLogin();
+
+        Thread.sleep(500);
+        credentialsPage.clickNavCredentialsTab();
+
+        // DELETE CREDENTIAL TESTS
+        Thread.sleep(500);
+        credentialsPage.clickDeleteCredentialButton();
+        driver.switchTo().alert().accept();
+
+        Thread.sleep(1000);
+        driver.findElement(By.xpath("/html/body/div/div/span/a")).click();
+
+        Thread.sleep(500);
+        credentialsPage.clickNavCredentialsTab();
+
+        assertEquals("", driver.findElement(By.xpath("//*[@id=\"userTable\"]/tbody")).getText());
+    }
 
 }
