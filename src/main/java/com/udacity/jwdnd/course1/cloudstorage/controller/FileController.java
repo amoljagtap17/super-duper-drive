@@ -40,7 +40,12 @@ public class FileController {
             user.getUserId()
         );
 
-        if (existingFile != null) {
+        if (fileUpload.getOriginalFilename().length() == 0) {
+            model.addAttribute("success", false);
+
+            errorMsg = "Please select a file!";
+        }
+        else if (existingFile != null) {
             model.addAttribute("success", false);
 
             errorMsg = "File already exists";
