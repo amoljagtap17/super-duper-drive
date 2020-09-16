@@ -25,7 +25,7 @@
                 </nav>
                 <div class="tab-content" id="nav-tabContent">
                     <div class="tab-pane fade show active" id="nav-files" role="tabpanel" aria-labelledby="nav-files-tab">
-                        <form action="#" th:action="@{/file/upload}" enctype="multipart/form-data" method="POST">
+                        <form action="#" th:action="@{/file/upload}" enctype="multipart/form-data" method="POST" onsubmit="return validateUpload();">
                             <div class="container">
                                 <div class="row" style="margin: 1em;">
                                     <div class="col-sm-2">
@@ -231,6 +231,20 @@
                 $('#credential-username').val(username ? username : '');
                 $('#credential-password').val(password ? password : '');
                 $('#credentialModal').modal('show');
+            }
+
+            // For validating file is selected before submit
+            function validateUpload() {
+                var fileSelected = document.getElementById('fileUpload');
+
+                console.log('fileSelected', fileSelected.value.length)
+
+                if (fileSelected.value.length === 0) {
+                    alert('Please select a file!');
+                    return false;
+                }
+
+                return true;
             }
         </script>
     </body>
