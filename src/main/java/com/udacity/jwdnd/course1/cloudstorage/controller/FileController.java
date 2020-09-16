@@ -34,23 +34,35 @@ public class FileController {
         String errorMsg = null;
 
         User user = userService.getUser(authentication.getName());
-        File fileToUpload = new File(
-                null,
-                fileUpload.getOriginalFilename(),
-                fileUpload.getContentType(),
-                String.valueOf(fileUpload.getSize()),
-                user.getUserId(),
-                fileUpload.getBytes()
+
+        File existingFile = fileService.getFileByNameForCurrentUser(
+            fileUpload.getOriginalFilename(),
+            user.getUserId()
         );
 
-        try {
-            fileService.uploadFile(fileToUpload);
-
-            model.addAttribute("success", true);
-        } catch (Exception ex) {
+        if (existingFile != null) {
             model.addAttribute("success", false);
 
-            errorMsg = "There was an error uploading the file. Please try again.";
+            errorMsg = "File already exists";
+        } else {
+            File fileToUpload = new File(
+                    null,
+                    fileUpload.getOriginalFilename(),
+                    fileUpload.getContentType(),
+                    String.valueOf(fileUpload.getSize()),
+                    user.getUserId(),
+                    fileUpload.getBytes()
+            );
+
+            try {
+                fileService.uploadFile(fileToUpload);
+
+                model.addAttribute("success", true);
+            } catch (Exception ex) {
+                model.addAttribute("success", false);
+
+                errorMsg = "There was an error uploading the file. Please try again.";
+            }
         }
 
         model.addAttribute("errorMsg", errorMsg);

@@ -26,6 +26,10 @@ public class FileService {
         return fileMapper.getFileById(fileId);
     }
 
+    public File getFileByNameForCurrentUser(String fileName, Integer userId) {
+        return fileMapper.getFileByNameForCurrentUser(fileName, userId);
+    }
+
     public List<File> getAllFiles(Integer userId) {
         return fileMapper.getAllFiles(userId);
     }
